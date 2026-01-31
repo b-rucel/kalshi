@@ -1,15 +1,9 @@
 # kalshi
 
-To install dependencies:
+check out docs/api.docs.md for how to get started with using the Kalshi API
 
-```bash
-bun install
-```
+need to generate a key in the Kalshi dashboard
 
-To run:
+markets
 
-```bash
-bun run index.ts
-```
 
-This project was created using `bun init` in bun v1.2.22. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.

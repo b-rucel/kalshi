@@ -20,12 +20,12 @@ export class KalshiClient {
   async request<T>(path: string, options: RequestInit = {}): Promise<T> {
     const method = options.method || "GET";
     const timestamp = Date.now();
-    
+
     // Path for signature must be the full path component, e.g., /trade-api/v2/portfolio/balance
     // Since our baseUrl includes /trade-api/v2, we need to be careful.
     // Let's assume the 'path' argument passed to this function is relative to the API root (e.g., '/portfolio/balance')
     // But the signature requires the full path on the server.
-    
+
     const url = new URL(this.baseUrl + path);
     const signaturePath = url.pathname; // This extracts '/trade-api/v2/portfolio/balance' correctly
 
