@@ -17,6 +17,15 @@ These limits apply to the Basic (free) tier with an API key.
 - **Read**: 20 requests per second
 - **Write**: 10 requests per second
 
+### Implementation
+The `KalshiClient` implements an internal **Sliding Window** rate limiter (`src/lib/RateLimiter.ts`) that automatically throttles outgoing requests to stay within these bounds. 
+
+- **GET** requests share the Read bucket.
+- **POST/PUT/DELETE** requests share the Write bucket.
+
+> [!IMPORTANT]
+> Because the client uses `await` to throttle requests *before* they are sent, a UI connected to this client may experience occasional lag or "freezing" of data updates if the request limit is reached. The client will resume automatically once the rate-limit window resets.
+
 
 
 ## api groups
