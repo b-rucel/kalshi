@@ -1,10 +1,14 @@
-import { Border } from './border';
-import { stringWidth, stripAnsi, padRight, padLeft, center, colorToAnsiPrefix } from './utils';
+import type { Border, BorderStyle } from './border';
+import { resolveBorder } from './border';
+import { stringWidth, stripAnsi, padRight, padLeft, center } from './utils';
+import { colorToAnsiPrefix } from './colors';
 
 export type Position = number;
 export const Left: Position = 0;
 export const Center: Position = 0.5;
 export const Right: Position = 1;
+// ... (omitting unchanged lines) ...
+
 
 export class Style {
     // Text Styling
@@ -83,15 +87,15 @@ export class Style {
     marginBottom(v: number): Style { this._marginBottom = v; return this; }
     marginLeft(v: number): Style { this._marginLeft = v; return this; }
 
-    border(b: Border, top: boolean = true, right: boolean = true, bottom: boolean = true, left: boolean = true): Style {
-        this._border = b;
+    border(b: Border | BorderStyle, top: boolean = true, right: boolean = true, bottom: boolean = true, left: boolean = true): Style {
+        this._border = resolveBorder(b);
         this._borderTop = top;
         this._borderRight = right;
         this._borderBottom = bottom;
         this._borderLeft = left;
         return this;
     }
-    borderStyle(b: Border): Style { return this.border(b, true, true, true, true); }
+    borderStyle(b: Border | BorderStyle): Style { return this.border(b, true, true, true, true); }
     borderTop(b: boolean): Style { this._borderTop = b; return this; }
     borderRight(b: boolean): Style { this._borderRight = b; return this; }
     borderBottom(b: boolean): Style { this._borderBottom = b; return this; }
@@ -180,7 +184,7 @@ export class Style {
         if (this._border) {
             const b = this._border;
             const newLines: string[] = [];
-            
+
             let borderPrefix = "";
             if (this._borderForeground) borderPrefix += colorToAnsiPrefix(this._borderForeground, false);
             if (this._borderBackground) borderPrefix += colorToAnsiPrefix(this._borderBackground, true);
@@ -229,7 +233,7 @@ export class Style {
 
         return marginedLines.join('\n');
     }
-    
+
     copy(): Style {
         const s = new Style();
         // (Manual copy of properties - shortened for brevity but should be complete in production)

@@ -1,27 +1,4 @@
-const ESC = "\x1b[";
-
-function hexToRgb(hex: string): [number, number, number] | null {
-  hex = hex.replace(/^#/, '');
-  if (hex.length === 3) {
-    hex = hex.split('').map(c => c + c).join('');
-  }
-  if (hex.length !== 6) return null;
-  
-  const int = parseInt(hex, 16);
-  return [(int >> 16) & 255, (int >> 8) & 255, int & 255];
-}
-
-export const color = (str: string, code: number | string) => {
-  if (typeof code === 'number') {
-    return `${ESC}${code}m${str}${ESC}0m`;
-  } else if (typeof code === 'string' && code.startsWith('#')) {
-    const rgb = hexToRgb(code);
-    if (rgb) {
-      return `${ESC}38;2;${rgb[0]};${rgb[1]};${rgb[2]}m${str}${ESC}0m`;
-    }
-  }
-  return str;
-};
+// String Utilities
 
 export function stripAnsi(str: string): string {
   return str.replace(/\x1b\[[0-9;]*m/g, '');
@@ -29,4 +6,24 @@ export function stripAnsi(str: string): string {
 
 export function stringWidth(str: string): number {
   return stripAnsi(str).length;
+}
+
+export function padRight(str: string, width: number): string {
+  const len = stringWidth(str);
+  if (len >= width) return str;
+  return str + " ".repeat(width - len);
+}
+
+export function padLeft(str: string, width: number): string {
+  const len = stringWidth(str);
+  if (len >= width) return str;
+  return " ".repeat(width - len) + str;
+}
+
+export function center(str: string, width: number): string {
+  const len = stringWidth(str);
+  if (len >= width) return str;
+  const left = Math.floor((width - len) / 2);
+  const right = width - len - left;
+  return " ".repeat(left) + str + " ".repeat(right);
 }

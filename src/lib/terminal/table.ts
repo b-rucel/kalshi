@@ -1,26 +1,13 @@
-import { Border, NormalBorder, RoundedBorder, ThickBorder, DoubleBorder, HiddenBorder } from "./border";
-import { color, stringWidth } from "./utils";
+import type { Border, BorderStyle } from "./border";
+import { NormalBorder, RoundedBorder, ThickBorder, DoubleBorder, HiddenBorder, resolveBorder } from "./border";
+import { color } from "./colors";
+import { stringWidth } from "./utils";
 
-export type BorderStyle = 'normal' | 'rounded' | 'thick' | 'double' | 'hidden';
+export type { BorderStyle };
 
 export interface TableOptions {
   borderColor?: number | string;
   border?: Border | BorderStyle;
-}
-
-function resolveBorder(b?: Border | BorderStyle): Border {
-  if (!b) return NormalBorder;
-  if (typeof b === 'string') {
-    switch (b) {
-      case 'rounded': return RoundedBorder;
-      case 'thick': return ThickBorder;
-      case 'double': return DoubleBorder;
-      case 'hidden': return HiddenBorder;
-      case 'normal':
-      default: return NormalBorder;
-    }
-  }
-  return b;
 }
 
 export function renderTable(headers: string[], rows: string[][], options: TableOptions = {}) {
@@ -39,15 +26,16 @@ export function renderTable(headers: string[], rows: string[][], options: TableO
   for (let i = 0; i < numCols; i++) {
     let max = 0;
     if (headers[i]) {
-      max = Math.max(max, stringWidth(headers[i]));
+      max = Math.max(max, stringWidth(headers[i] || ""));
     }
     for (const row of rows) {
       if (row[i]) {
-        max = Math.max(max, stringWidth(row[i]));
+        max = Math.max(max, stringWidth(row[i] || ""));
       }
     }
     colWidths[i] = max + 2; // +2 for padding
   }
+
 
   // Box Drawing Characters
   const border = resolveBorder(options.border);
@@ -85,7 +73,7 @@ export function renderTable(headers: string[], rows: string[][], options: TableO
       const padLeft = Math.floor(pad / 2);
       const padRight = pad - padLeft;
       s += " ".repeat(padLeft) + content + " ".repeat(padRight);
-      
+
       if (i < numCols - 1) {
         s += vBorderMid;
       } else {

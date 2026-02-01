@@ -45,3 +45,27 @@ export const HiddenBorder: Border = {
     topLeft: " ", topRight: " ", bottomLeft: " ", bottomRight: " ",
     middleLeft: " ", middleRight: " ", middle: " ", middleTop: " ", middleBottom: " "
 };
+
+export type BorderStyle = 'normal' | 'rounded' | 'thick' | 'double' | 'hidden';
+
+/**
+ * Resolves a border definition from a string name (e.g. 'rounded') or returns the border object as-is.
+ * This allows APIs to accept both convenient string shorthands and full custom Border objects.
+ *
+ * @param b - The border style string ('rounded', 'double', etc.) or a full Border object
+ * @returns A valid Border object ready for rendering
+ */
+export function resolveBorder(b?: Border | BorderStyle): Border {
+    if (!b) return NormalBorder;
+    if (typeof b === 'string') {
+        switch (b) {
+            case 'rounded': return RoundedBorder;
+            case 'thick': return ThickBorder;
+            case 'double': return DoubleBorder;
+            case 'hidden': return HiddenBorder;
+            case 'normal':
+            default: return NormalBorder;
+        }
+    }
+    return b;
+}
