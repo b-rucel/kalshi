@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.3] - 2026-02-02
+
+### Added
+- **Terminal UI Library**:
+  - Implemented `Renderer` class for double-buffered, flicker-free terminal updates.
+  - Added `Input` module for robust keyboard event handling (keypress detection).
+  - Added `Layout` and `JSON` utilities for rich terminal interfaces and syntax highlighting.
+  - Added support for alternate screen buffer management.
+- **Interactive Demos**:
+  - Transformed `index.ts` into a fully interactive TUI demo application for exploring Kalshi series, events, and markets.
+  - Updated `scripts/query.ts` to utilize the new TUI capabilities.
+
+### Changed
+- Updated `Table` component to support alternate row coloring and string output mode.
+- Exported new terminal modules from `src/lib/terminal/index.ts`.
+
 ## [0.0.2] - 2026-02-01
 
 ### Added
