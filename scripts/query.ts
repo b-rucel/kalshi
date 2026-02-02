@@ -114,7 +114,7 @@ async function main() {
                m.close_time || "N/A"
              ]);
 
-             renderTable(mHeaders, mRows, { border: "rounded", borderColor: "cyan", alternateRowColor: "darkGray" });
+             renderTable(mHeaders, mRows, { border: "rounded", borderColor: "cyan", alternateRowColor: "#F4C095" });
            } else {
              console.log(color("No markets with liquidity found for this event.", "yellow"));
            }
