@@ -8,9 +8,11 @@ export type { BorderStyle };
 export interface TableOptions {
   borderColor?: number | string;
   border?: Border | BorderStyle;
+  alternateRowColor?: number | string;
+  returnString?: boolean;
 }
 
-export function renderTable(headers: string[], rows: string[][], options: TableOptions = {}) {
+export function renderTable(headers: string[], rows: string[][], options: TableOptions = {}): string | void {
   // clearScreen();
 
   if (headers.length === 0 && rows.length === 0) return;
@@ -60,8 +62,14 @@ export function renderTable(headers: string[], rows: string[][], options: TableO
   const vBorderRight = b(border.right);
   const vBorderMid = b(border.middleVertical || border.left);
 
+  const outputLines: string[] = [];
+  const log = (s: string) => {
+    if (options.returnString) outputLines.push(s);
+    else console.log(s);
+  };
+
   // Table Top
-  console.log(topBorder);
+  log(topBorder);
 
   // Header
   if (headers.length > 0) {
@@ -80,17 +88,20 @@ export function renderTable(headers: string[], rows: string[][], options: TableO
         s += vBorderRight;
       }
     }
-    console.log(s);
-    console.log(midBorder);
+    log(s);
+    log(midBorder);
   }
 
   // Rows
-  for (const row of rows) {
+  rows.forEach((row, rowIndex) => {
     let s = vBorder;
+    const isAlternate = options.alternateRowColor && rowIndex % 2 !== 0;
+
     for (let i = 0; i < numCols; i++) {
-      const content = row[i] || "";
+      const rawContent = row[i] || "";
+      const content = isAlternate ? color(rawContent, options.alternateRowColor!) : rawContent;
       const w = colWidths[i];
-      const visibleLen = stringWidth(content);
+      const visibleLen = stringWidth(rawContent);
       // Left align body with 1 char padding
       const totalPad = w - visibleLen;
       const l = 1;
@@ -103,9 +114,13 @@ export function renderTable(headers: string[], rows: string[][], options: TableO
         s += vBorderRight;
       }
     }
-    console.log(s);
-  }
+    log(s);
+  });
 
   // Table Bottom
-  console.log(botBorder);
+  log(botBorder);
+
+  if (options.returnString) {
+    return outputLines.join('\n');
+  }
 }

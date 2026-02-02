@@ -18,7 +18,7 @@ console.log(simpleStyle.render("Hello, Kalshi Terminal!"));
 /**
  * Example 2: Borders and Alignment
  */
-console.log(NewStyle().foreground("#04B575").bold(true).marginTop(1).render("--- Example 2: Borders and Alignment ---"));
+console.log(NewStyle().foreground("#EE2E31").bold(true).marginTop(1).render("--- Example 2: Borders and Alignment ---"));
 const boxStyle = NewStyle()
   .border(RoundedBorder)
   .borderForeground("#F01ADE")
@@ -117,4 +117,42 @@ console.log(NewStyle()
   .foreground("white")
   .render(rainbow("   ChromaWave Is Awesome!   ", 0.2))
 );
+console.log("");
+
+/**
+ * Example 8: TrueColor Grid
+ */
+console.log(NewStyle().foreground("#04B575").bold(true).render("--- Example 8: TrueColor Grid ---"));
+
+// Define corners based on the reference image (approximate "Primary/Vibrant" look)
+const tl = [255, 0, 255];   // Magenta
+const tr = [255, 255, 0];   // Yellow
+const bl = [100, 50, 255];  // Violet/Blue
+const br = [0, 255, 255];   // Cyan
+
+for (let y = 0; y < 15; y++) {
+  let line = "";
+  for (let x = 0; x < 30; x++) {
+    const xPct = x / 29; // 0..1
+    const yPct = y / 14; // 0..1
+
+    // Interpolate Top Row (Mag -> Yel)
+    const topR = tl[0] + (tr[0] - tl[0]) * xPct;
+    const topG = tl[1] + (tr[1] - tl[1]) * xPct;
+    const topB = tl[2] + (tr[2] - tl[2]) * xPct;
+
+    // Interpolate Bottom Row (Vio -> Cya)
+    const botR = bl[0] + (br[0] - bl[0]) * xPct;
+    const botG = bl[1] + (br[1] - bl[1]) * xPct;
+    const botB = bl[2] + (br[2] - bl[2]) * xPct;
+
+    // Interpolate Vertical
+    const r = Math.round(topR + (botR - topR) * yPct);
+    const g = Math.round(topG + (botG - topG) * yPct);
+    const b = Math.round(topB + (botB - topB) * yPct);
+
+    line += color("██", rgb(r, g, b));
+  }
+  console.log(line);
+}
 console.log("");
