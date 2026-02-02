@@ -89,14 +89,38 @@ https://docs.kalshi.com/api-reference/
   - GetTrades
   - GetMarketOrderbook
   - GetSeries
+    - Query Parameters:
+      - include_volume: boolean (default false)
   - GetSeriesList
+    - Query Parameters:
+      - category: string
+      - tags: string
+      - include_product_metadata: boolean (default false)
+      - include_volume: boolean (default false)
   - GetMarkets
+    - Query Parameters:
+      - limit: integer (1-1000, default 100)
+      - cursor: string
+      - status: enum (active, closed, settled)
+      - event_ticker: string
+      - series_ticker: string
+      - max_close_ts: integer (unix seconds)
+      - min_close_ts: integer (unix seconds)
+      - ticker: string
   - GetMarket
   - BatchGetMarketCandlesticks
 
 - events
   - GetEventCandlesticks
   - GetEvents
+    - Query Parameters:
+      - limit: integer (1-200, default 200)
+      - cursor: string
+      - with_nested_markets: boolean (default false)
+      - with_milestones: boolean (default false)
+      - status: enum (open, closed, settled)
+      - series_ticker: string
+      - min_close_ts: integer (unix seconds)
   - GetMultivariateEvents
   - GetEvent
   - GetEventMetadata

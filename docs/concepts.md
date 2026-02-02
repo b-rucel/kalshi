@@ -53,3 +53,49 @@ Based on API exploration:
 - Health
 - World
 - Crypto
+
+
+## Data Fetching Strategies
+
+### 1. The "Drill-Down" Hierarchy (Context-First)
+Best for manual research or category-specific browsing.
+**Flow:** `Series -> Events -> Markets`
+
+*   **Step 1:** Fetch `Series` by Category (e.g., "Economics").
+*   **Step 2:** Fetch `Events` for that series.
+    *   *Optimization:* Use `with_nested_markets=true` to get all market data in this single call.
+    *   *Filter:* Use `min_close_ts` and `status=open` to remove dead events.
+*   **Step 3:** Analyze Markets (Liquidity, Spread, Volume) locally.
+
+**Pros:**
+*   High context (you know *what* you are looking at).
+*   Good for thematic trading (e.g., "I want to trade Fed Rates").
+
+**Cons:**
+*   Slower if you want to scan the *entire* exchange.
+
+### 2. The "Market Scanner" (Math-First)
+Best for algorithmic trading and finding mispriced opportunities globally.
+**Flow:** `All Markets -> Filter -> Group by Event`
+
+*   **Step 1:** Fetch `All Markets` (Pagination required).
+    *   *Filter:* `status=active`, `min_close_ts=NOW`.
+*   **Step 2:** Apply Quantitative Filters (Client-Side).
+    *   Liquidity > $500
+    *   Spread <= 3 cents
+    *   Price in "Alpha Zone" (20c - 80c)
+*   **Step 3:** Group survivors by `event_ticker`.
+*   **Step 4:** Fetch Event details only for the winners to get the "Story".
+
+**Pros:**
+*   Extremely efficient at finding "tradeable" numbers.
+*   Category agnostic (finds opportunities you didn't look for).
+
+**Cons:**
+*   Requires handling pagination of thousands of markets.
+*   Zero context until the final step.
+
+### Key API Parameters for Filtering
+*   **`with_nested_markets` (Events Endpoint):** The "Silver Bullet" for the Drill-Down method. Reduces N+1 API calls to a single call.
+*   **`min_close_ts`:** Temporal filter to remove expiring/dead events.
+*   **`status`:** Server-side filter for `open` or `active` states.
